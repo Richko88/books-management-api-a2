@@ -72,4 +72,25 @@ router.post("/", async (req,res) => {
     }
 })
 
+router.delete("/:id", async (req,res) =>{
+    try{
+        const [entry] = await db.select().from(books).where(eq(books.id, +req.params.id))
+
+        if (!entry){
+            return res.status(404).json({
+                message: "Book not found!"
+            })
+        }
+
+        await db.delete(books).where(eq(books.id, +req.params.id));
+
+        return res.status(200).json({
+            message: "Books deleted succesfully!"
+        })
+    }
+    catch (err){
+        return renderErrorHandler(err, res)
+    }
+})
+
 module.exports = router;
